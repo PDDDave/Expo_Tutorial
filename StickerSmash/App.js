@@ -7,20 +7,33 @@ import Button from './components/Button';
 import ImageViewer from './components/ImageViewer';
 import CircleButton from './components/CircleButton';
 import IconButton from './components/IconButton';
+import EmojiPicker from './components/EmojiPicker';
+import EmojiList from './components/EmojiList';
+import EmojiSticker from './components/EmojiSticker';
 
 const PlaceholderImage = require ('./assets/images/background-image.png');
 
 export default function App() {
-  const[showAppOptions, setShowAppOptions] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showAppOptions, setShowAppOptions] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [pickedEmoji, setPickedEmoji] = useState(null);
 
   const onReset = ()=> {
     setShowAppOptions(false);
   };
 
+  const onThisSticker = ()=>{
+    setShowAppOptions(true);
+  }
+
   const onAddSticker = ()=> {
-    //later
+    setIsModalVisible(true);
   };
+
+  const onModalClose = ()=>{
+    setIsModalVisible(false);
+  }
 
   const onSaveImageAsync = async ()=>{
     //later
@@ -47,6 +60,7 @@ export default function App() {
           placeholderImageSource={PlaceholderImage}
           selectedImage={selectedImage}
         />
+        {pickedEmoji !== null ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji} /> : null}
       </View>
       {showAppOptions ? (
         <View style={styles.optionsContainer}>
@@ -59,9 +73,12 @@ export default function App() {
       ) : (
       <View style= {styles.footercontainer}>
         <Button theme="primary" label='Choose a Photo' /*@info*/ onPress={pickImageAsync} /*@end*//>
-        <Button label='Use this photo'/>
+        <Button label='Use this photo' onPress={onThisSticker}/>
       </View>
       )}
+      <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
+        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose}/>
+      </EmojiPicker>
       <StatusBar style="auto" />
     </View>
   );
